@@ -16,17 +16,17 @@ pub const XorEncoder = struct {
     // current float value bits
     current: ?u64,
     // number of leading zeros
-    leading_zeroes: u32,
+    leading_zeros: u32,
     // number of trailing zeros
-    trailing_zeroes: u32,
+    trailing_zeros: u32,
     // writer
     writer: StreamWriter,
 
     pub fn init(allocator: Allocator) XorEncoder {
         return XorEncoder{
             .current = null,
-            .leading_zeroes= 64, // initial sentinel value of 64
-            .trailing_zeroes= 64,
+            .leading_zeros= 64, // initial sentinel value of 64
+            .trailing_zeros= 64,
             .writer = StreamWriter.init(allocator),
         };
     }
@@ -34,8 +34,8 @@ pub const XorEncoder = struct {
     pub fn with_capacity(allocator: Allocator, capacity: usize) XorEncoder {
         return XorEncoder{
             .current = null,
-            .leading_zeroes= 64, // initial sentinel value of 64
-            .trailing_zeroes= 64,
+            .leading_zeros= 64, // initial sentinel value of 64
+            .trailing_zeros= 64,
             .writer = StreamWriter.with_capacity(allocator, capacity),
         };
     }
@@ -68,35 +68,35 @@ pub const XorEncoder = struct {
         }
 
         try self.writer.write_bit(.one);
-        const leading_zeroes: u8 = @clz(xor);
-        const trailing_zeroes: u8 = @ctz(xor);
+        const leading_zeros: u8 = @clz(xor);
+        const trailing_zeros: u8 = @ctz(xor);
 
-        // If the number of leading and trailing zeroes in this xor are >= the leading and
-        // trailing zeroes in the previous xor then we only need to store a control bit and
+        // If the number of leading and trailing zeros in this xor are >= the leading and
+        // trailing zeros in the previous xor then we only need to store a control bit and
         // the significant digits of this xor
-        if (self.leading_zeroes <= leading_zeroes and self.trailing_zeroes <= trailing_zeroes) {
+        if (self.leading_zeros <= leading_zeros and self.trailing_zeros <= trailing_zeros) {
             try self.writer.write_bit(.zero);
-            const significat_bits = 64 - self.leading_zeroes - self.trailing_zeroes;
-            return self.writer.write_bits(shift_right(u64, xor, self.trailing_zeroes), significat_bits);
+            const significat_bits = 64 - self.leading_zeros - self.trailing_zeros;
+            return self.writer.write_bits(shift_right(u64, xor, self.trailing_zeros), significat_bits);
         }
         
 
-        // If the number of leading and trailing zeroes in this xor are not less than the
-        // leading and trailing zeroes in the previous xor then we store a control bit and
-        // use 6 bits to store the number of leading zeroes and 6 bits to store the number
+        // If the number of leading and trailing zeros in this xor are not less than the
+        // leading and trailing zeros in the previous xor then we store a control bit and
+        // use 6 bits to store the number of leading zeros and 6 bits to store the number
         // of significant digits before storing the significant digits themselves
         try self.writer.write_bit(.one);
-        try self.writer.write_bits(@as(u64, leading_zeroes), 6);
+        try self.writer.write_bits(@as(u64, leading_zeros), 6);
 
         // If significant_digits is 64 we cannot encode it using 6 bits, however since
         // significant_digits is guaranteed to be at least 1 we can subtract 1 to ensure
         // significant_digits can always be expressed with 6 bits or less
-        const significat_bits = 64 - leading_zeroes - trailing_zeroes;
+        const significat_bits = 64 - leading_zeros - trailing_zeros;
         try self.writer.write_bits(@as(u64, significat_bits-1), 6);
-        try self.writer.write_bits(shift_right(u64, xor, trailing_zeroes), significat_bits);
+        try self.writer.write_bits(shift_right(u64, xor, trailing_zeros), significat_bits);
 
-        self.leading_zeroes = leading_zeroes;
-        self.trailing_zeroes = trailing_zeroes;
+        self.leading_zeros = leading_zeros;
+        self.trailing_zeros = trailing_zeros;
     }
 
 };

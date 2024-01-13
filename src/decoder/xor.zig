@@ -16,17 +16,17 @@ pub const XorDecoder = struct {
     // current float value bits
     current: ?u64,
     // number of leading zeros
-    leading_zeroes: u32,
+    leading_zeros: u32,
     // number of trailing zeros
-    trailing_zeroes: u32,
+    trailing_zeros: u32,
     // reader
     reader: StreamReader,
 
     pub fn init(bytes: []const u8) StreamError!XorDecoder {
         return XorDecoder{
             .current = null,
-            .leading_zeroes = 0,
-            .trailing_zeroes = 0,
+            .leading_zeros = 0,
+            .trailing_zeros = 0,
             .reader = StreamReader.init(bytes),
         };
     }
@@ -53,16 +53,16 @@ pub const XorDecoder = struct {
             return u64Tof64(self.current);
         }
 
-        const zeroes_bit = try self.reader.read_bit();
-        if (zeroes_bit == .one) {
-            self.leading_zeroes = @intCast(try self.reader.read_bits(6));
+        const zeros_bit = try self.reader.read_bit();
+        if (zeros_bit == .one) {
+            self.leading_zeros = @intCast(try self.reader.read_bits(6));
             const significant_bits: u32 = @as(u32, @intCast(try self.reader.read_bits(6))) + 1;
-            self.trailing_zeroes = 64 - self.leading_zeroes - significant_bits;
+            self.trailing_zeros = 64 - self.leading_zeros - significant_bits;
         }
 
-        const size = 64 - self.leading_zeroes - self.trailing_zeroes;
+        const size = 64 - self.leading_zeros - self.trailing_zeros;
         const value_bits = try self.reader.read_bits(size);
-        self.current = self.current.? ^ shift_left(u64, value_bits, self.trailing_zeroes);
+        self.current = self.current.? ^ shift_left(u64, value_bits, self.trailing_zeros);
         return u64Tof64(self.current);
     }
 
