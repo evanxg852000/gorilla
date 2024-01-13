@@ -1,11 +1,10 @@
 # Gorilla 🦍
 
-A port of the Facebook gorilla time-series data compression algorithm to Zig
+A port of the Facebook gorilla time-series data compression algorithm to Zig.
 
-ℹ️ : This was done as part of my time at [Recurse Center](https://www.recurse.com/).
+ℹ️ This was done as part of my time at [Recurse Center](https://www.recurse.com/).
 
-⚠️ : Please, do not rely on this library for production work. 
-It still needs to be thoroughly tested. You are welcome to help.
+⚠️ Please, do not rely on this library for production work. It still needs to be thoroughly tested. You are also welcome to help.
 
 ## How to use?
 
@@ -60,3 +59,9 @@ pub fn main() !void {
 }
 ```
 
+## Credits to the following resources.
+
+- [The Facebook gorilla paper](https://www.vldb.org/pvldb/vol8/p1816-teller.pdf)
+- [The reference implementation](https://github.com/facebookarchive/beringei)
+- [A golang implementation](https://github.com/keisku/gorilla)
+- [A rust implementation](https://github.com/jeromefroe/tsz-rs)
