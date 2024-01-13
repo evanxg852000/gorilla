@@ -1,9 +1,10 @@
 # Gorilla 🦍
 
-A command line parser for Zig ⚡
+A port of the Facebook gorilla time-series data compression algorithm to Zig
 
-ℹ️ Info: This was done as part of my time at [Recurse Center]().
-⚠️ Warning: please, do not rely on this library for production work. 
+ℹ️ Info: This was done as part of my time at [Recurse Center](https://www.recurse.com/).
+
+⚠️ Warning: Please, do not rely on this library for production work. 
 It still needs to be thoroughly tested. You are welcome to help.
 
 ## How to use?
